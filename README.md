@@ -22,5 +22,11 @@ https://grafana.com/grafana/dashboards/763
 ```
 Variable was removed as it blocked alerts usage.
 
-gave fun and play with alerts, notifications etc.
+Have fun and play with alerts, notifications etc.
 
+Grafana notifications to Slack: https://medium.com/@_oleksii_/grafana-alerting-and-slack-notifications-3affe9d5f688
+
+
+Note:
+
+If you want to monitor your own Redis instance just remove provided one from focker-compose and setup yours in prometheus.yml
