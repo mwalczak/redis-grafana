@@ -2,6 +2,11 @@
 
 Monitor redis instance with Grafana, Prometheus and Redis exporter
 
+Start with:
+```
+docker-compose up -d
+```
+
 Login to Grafana:
 
 http://localhost:3000
