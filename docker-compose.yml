@@ -8,8 +8,8 @@ services:
 
   exporter:
     image: oliver006/redis_exporter:alpine
-    links:
-      - redis:redis
+    depends_on:
+      - redis
     ports:
       - 9121:9121
 
@@ -28,15 +28,15 @@ services:
     ports:
       - 9091:9091
 
-  prometheus-server:
+  prometheus:
     image: prom/prometheus
     ports:
       - 9090:9090
-    links:
-      - cadvisor:cadvisor
-      - metrics-gateway:metrics-gateway
-      - exporter:exporter
-      - redis:redis
+    depends_on:
+      - cadvisor
+      - metrics-gateway
+      - exporter
+      - redis
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
@@ -46,8 +46,8 @@ services:
       - 3000:3000
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=secret
-    links:
-      - prometheus-server:prometheus
+    depends_on:
+      - prometheus
     volumes:
       - ./grafana_data:/var/lib/grafana
 
