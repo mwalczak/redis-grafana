@@ -1,0 +1,56 @@
+version: '2'
+
+services:
+  redis:
+    image: redis
+    ports:
+      - 6379
+
+  exporter:
+    image: oliver006/redis_exporter:alpine
+    links:
+      - redis:redis
+    ports:
+      - 9121:9121
+
+  cadvisor:
+    image: google/cadvisor
+    ports:
+      - 8081:8081
+    volumes:
+      - /mnt/c:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
+  metrics-gateway:
+    image: prom/pushgateway
+    ports:
+      - 9091:9091
+
+  prometheus-server:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    links:
+      - cadvisor:cadvisor
+      - metrics-gateway:metrics-gateway
+      - exporter:exporter
+      - redis:redis
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana-ui:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    links:
+      - prometheus-server:prometheus
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+
+volumes:
+  redis_data:
+    driver: local
